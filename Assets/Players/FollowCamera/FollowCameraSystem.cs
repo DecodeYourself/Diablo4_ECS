@@ -1,5 +1,4 @@
 using Unity.Entities;
-using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -9,13 +8,12 @@ namespace Players.FollowCamera
     {
         protected override void OnUpdate()
         {
-            Translation targetTranslation = default;
-            FollowTargetComponent followTarget = default;
-            Entities.ForEach((ref FollowTargetComponent followTargetComponent, ref Translation translation) =>
-            {
-                targetTranslation = translation;
-                followTarget = followTargetComponent;
-            });
+            var followTargetEntity = GetSingletonEntity<FollowTargetComponent>();
+            var translations = GetComponentDataFromEntity<Translation>();
+            var followTargetComponents = GetComponentDataFromEntity<FollowTargetComponent>();
+
+            var targetTranslation = translations[followTargetEntity];
+            var followTarget = followTargetComponents[followTargetEntity];
 
             Entities.ForEach((Transform cameraTranslation, ref FollowCameraComponent cameraComponent) =>
             {
